@@ -135,7 +135,7 @@ districts_predict_clean <- districts_predict %>%
 
 Using your estimated marginal abatement cost curves, derive each district’s demand curve for water. In other words, how much would each district be willing to pay for the right to use the first AF of water, second AF, etc.? Plot each district’s demand curve on a single graph. Which sector is willing to pay the most for the first AF of water?
 
-## **Figure X**
+### **Figure X**
 
 ```{r}
 # Caluclate demand curves:
@@ -160,15 +160,24 @@ ggplot(data = districts_predict_clean, aes(x = reduction, y = mc)) +
                      'darkolivegreen4', 'sienna2')) +
   geom_abline(color = "darkgoldenrod1",
               intercept = 343.5, slope= -lm_kern$coefficients) +
+  annotate("text", x = 10, y = 343, 
+           label = "Kern Demand", angle = -22) +
   geom_abline(color = "darkolivegreen4",
               intercept = 532, slope= -lm_mojave$coefficients) +
+  annotate("text", x = 20, y = 480, 
+           label = "Mojave Demand", angle = -35) +
   geom_abline(color = "cadetblue3",
               intercept = 629.2, slope= -lm_antelope$coefficients) +
+  annotate("text", x = 50, y = 500, 
+           label = "Antelope Demand", angle = -30) +
   geom_abline(color = "sienna2",
               intercept = 436.1, slope= -lm_ventura$coefficients) +
+  annotate("text", x = 10, y = 440, 
+           label = "Ventura Demand", angle = -19)
   labs(x = "Reduction (AF)", y = "Marginal Cost ($/AF)")
 
 ```
+#### *This graph shows both water demand (downward sloping lines) and marginal cost of abatement (upward sloping lines), color coded for each county.*  
 
 Based on the graph above, Antelope County is willing to pay the most for the first unit of water. 
 
