@@ -77,6 +77,9 @@ districts_sub <- districts %>%
 
 ggplot(data = districts_sub, aes(x = reduction, y = mc)) + 
   geom_point(aes(color = county)) +
+  scale_color_manual("County", 
+                     values = c('cadetblue3', 'darkgoldenrod1',
+                     'darkolivegreen4', 'sienna2')) +
   labs(x = "Reduction (AF)", y = "Marginal Cost ($/AF)")
 
 # Linear model for Kern MC forcing 0 intercept 
@@ -104,18 +107,70 @@ extract_eq(model = lm_ventura, use_coefs = TRUE)
 
 ### **2. Demand Assessment**
 
+```{r}
+# Make a predict data set from the linear models 
+
+kern_predict <- predict(lm_kern)
+mojave_predict <- predict(lm_mojave)
+antelope_predict <- predict(lm_antelope)
+ventura_predict <- predict(lm_ventura)
+
+districts_predict <- data.frame(districts, kern_predict, mojave_predict, antelope_predict, ventura_predict)
+
+# Now clean this like before 
+
+districts_predict_clean <- districts_predict %>% 
+  select(-mc_kern, -mc_mojave, -mc_antelope, -mc_ventura) %>% 
+  rename(kern = kern_predict,
+         mojave = mojave_predict,
+         antelope = antelope_predict,
+         ventura = ventura_predict) %>% 
+  pivot_longer(cols = c(kern, mojave, antelope, ventura),
+               names_to = 'county',
+               values_to = 'mc')
+
+# This will be the new MC data set 
+  
+```
+
 Using your estimated marginal abatement cost curves, derive each district’s demand curve for water. In other words, how much would each district be willing to pay for the right to use the first AF of water, second AF, etc.? Plot each district’s demand curve on a single graph. Which sector is willing to pay the most for the first AF of water?
 
+## **Figure X**
+
 ```{r}
-ggplot(data = districts_sub, aes(x = reduction, y = mc)) +
-  geom_smooth(aes(color = county)) +
-  geom_abline(color = "green",intercept = 150, slope= -1/lm_kern$coefficients) +
-  geom_abline(color = "blue",intercept = 140, slope= -1/lm_mojave$coefficients) +
-  geom_abline(color = "goldenrod",intercept = 220, slope= -1/lm_antelope$coefficients) +
-  geom_abline(color = "pink",intercept = 245, slope= -1/lm_ventura$coefficients)
+# Caluclate demand curves:
+# Kern (Baseline = 150) --> 2.29(A) 
+## 2.29(150 - A) --> 343.5 - 2.29A
+
+# Mojave (Baseline = 140) --> 3.8(A)
+## 3.8(140 - A) --> 532 - 3.8A
+
+# Antelope (Baseline = 220) --> 2.86(A)
+## 2.86(220 - A) --> 629.2 - 2.86A
+
+# Ventura (Baseline = 245) --> 1.78(A)
+## 1.78(245 - A) --> 436.1 - 1.78A
+
+
+
+ggplot(data = districts_predict_clean, aes(x = reduction, y = mc)) +
+  geom_line(aes(color = county)) +
+  scale_color_manual("County", 
+                     values = c('cadetblue3', 'darkgoldenrod1',
+                     'darkolivegreen4', 'sienna2')) +
+  geom_abline(color = "darkgoldenrod1",
+              intercept = 343.5, slope= -lm_kern$coefficients) +
+  geom_abline(color = "darkolivegreen4",
+              intercept = 532, slope= -lm_mojave$coefficients) +
+  geom_abline(color = "cadetblue3",
+              intercept = 629.2, slope= -lm_antelope$coefficients) +
+  geom_abline(color = "sienna2",
+              intercept = 436.1, slope= -lm_ventura$coefficients) +
+  labs(x = "Reduction (AF)", y = "Marginal Cost ($/AF)")
 
 ```
 
+Based on the graph above, Antelope County is willing to pay the most for the first unit of water. 
 
 ### **3. Policy Considerations**
 
