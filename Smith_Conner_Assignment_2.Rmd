@@ -142,14 +142,35 @@ Using your estimated marginal abatement cost curves, derive each district’s de
 # Kern (Baseline = 150) --> 2.29(A) 
 ## 2.29(150 - A) --> 343.5 - 2.29A
 
+reduction <- districts$reduction
+kern_demand <- function(reduction){
+ demand = 343.5 - 2.29*(reduction)
+return(demand)
+}
+
+
 # Mojave (Baseline = 140) --> 3.8(A)
 ## 3.8(140 - A) --> 532 - 3.8A
+mojave_demand <- function(reduction){
+ demand = 532 - 3.8*(reduction)
+return(demand)
+}
 
 # Antelope (Baseline = 220) --> 2.86(A)
 ## 2.86(220 - A) --> 629.2 - 2.86A
 
+antelope_demand <- function(reduction){
+ demand = 629.2 - 2.86*(reduction)
+return(demand)
+}
+
 # Ventura (Baseline = 245) --> 1.78(A)
 ## 1.78(245 - A) --> 436.1 - 1.78A
+
+ventura_demand <- function(reduction){
+ demand = 436.1 - 1.78*(reduction)
+return(demand)
+}
 
 
 
@@ -190,7 +211,7 @@ Here you will analyze three alternative policies for reducing water use among th
 ```{r}
 # Cap without trade. Reduce each district’s water use by the same fraction (e.g., 1/3 of current baseline use), so the 500 AF target is met. (multiplier is 0.338)
 
-fraction <- 0.338
+fraction <- 0.662
 kern_cap <- 150*fraction
 #50.7
 mojave_cap <- 140*fraction 
@@ -231,10 +252,32 @@ total_cost = ventura_cost + kern_cost + antelope_cost + mojave_cost
 
 *(4)* This policy does not generate tax revenue.
 
-Antelope COunty bears the highest individual cost as a result of this cap without trade policy which applies an equal fractional reduction to the baseline water use in each district. 
+Antelope County bears the highest individual cost as a result of this cap without trade policy which applies an equal fractional reduction to the baseline water use in each district. 
 
 ### **Tax on Water Use**
 
+```{r}
+# Tax applied to reach 500 AF level
+# Calculate aggregate demand to get the price at which cumulative water use is 500 AF
+
+# aggregate_demand = 1,940.8 - 10.73(REDUCTION) 
+# Demand at 755AF = 
+
+
+```
+
+
+*(1)* Stringency of this policy is defined as the magnitude of the fraction for reduction. In this case, that is equal to `r fraction`. 
+
+*(2)* Total cost of this approach is $`r total_cost`.
+
+*(3)* Individual district costs are as follows:
+- Kern : $`r kern_cost`
+- Mojave: $`r mojave_cost`
+- Antelope: $`r antelope_cost`
+- Ventura: $`r ventura_cost`
+
+*(4)*
 
 ### **4. Drought Sensitivity**
 
