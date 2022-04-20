@@ -313,7 +313,7 @@ ventura_cost_tax <- 0.5*tax_level*ventura_abate_tax
 #ventura_abate_tax+mojave_abate_tax+antelope_abate_tax+kern_abate_tax
 # Total abatement still 255 
 
-total_cost_tax = ventura_cost_tax+antelope_cost_tax+mojave_cost_tax+kern_cost_tax
+total_cost_tax = 0.5*255*tax_level 
 
 # Revenue is the tax times the AF used. 
 tax_revenue <- tax_level*500
@@ -358,7 +358,7 @@ We also have the total cost from above as: $`r total_cost_cap`.
 
 # Still need to abate 255 AF total, but Mojave and Kern will likely face higher relative MC while Antelope and Ventura will face slightly lower MC. 
 
-trade_mc <- 158.355
+trade_mc <- tax_level
 
 #Kern Q with trade
 kern_abate_trade <- trade_mc/2.29
@@ -396,20 +396,21 @@ mojave_cost_cap/mojave_abate_cap
 mojave_cost_tax/mojave_abate_trade
 # MC higher compared to cap
 
-0.5*trade_mc*255
+total_cost_trade<- 0.5*trade_mc*255
 ```
 
 *(1)* Stringency of this policy is defined as the magnitude of the tax for reduction. In this case, that is equal to $`r fraction`. 
 
-*(2)* Total cost of this approach is $.
+*(2)* Total cost of this approach is $`r total_cost_trade` (same as tax).
+This is $`r (total_cost_cap - total_cost_trade)` lower than the cost of the cap with no trade.
 
-*(3)* Individual district costs are as follows:
-- Kern : $`r `
-- Mojave: $`r `
-- Antelope: $`r `
-- Ventura: $`r `
+*(3)* Individual district costs are as follows (same as the tax):
+- Kern : $`r kern_cost_tax`
+- Mojave: $`r mojave_cost_tax`
+- Antelope: $`r antelope_cost_tax`
+- Ventura: $`r ventura_cost_tax`
 
-*(4)* Tax revenue generated is $`r tax_revenue` based on 500AF of total use.
+*(4)* No tax revenue is generated from this policy. Instead, some districts may pay others to increase abatement more so they can use more water. We did not calculate this, although it can be assumed that the per unit price of AF for the trade value is the same as the tax amount, which is $`r tax_level`. It is presumed that districts with lower costs under the cap and trade scenario (Mojave and Antelope) would compensate districts with higher costs (Kern and Ventura) to incentivize them to abate more.
 
 
 ### **4. Drought Sensitivity**
