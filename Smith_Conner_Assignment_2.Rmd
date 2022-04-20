@@ -1,4 +1,4 @@
----
+*---
 title: "ESM 204 - Assignment 2"
 author: "Conner Smith"
 date: "4/13/2022"
@@ -12,7 +12,7 @@ output:
 ---
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 library(tidyverse)
 library(here)
@@ -52,6 +52,7 @@ Agricultural water is managed by irrigation districts and is increasingly scarce
 The dataset contains estimates of the marginal cost of reducing water use in each of the four irrigation districts (Kern, Mojave, Antelope, and Ventura) for different levels of reduction (in Acre Feet).
 
 Current (i.e. baseline) water use in these districts is: 
+
 - Kern = 150 AF
 - Mojave = 140 AF
 - Antelope = 220 AF 
@@ -64,7 +65,7 @@ Prices are in $/Acre Foot and quantities are in Acre Feet (AF).
 
 For each irrigation district, plot the marginal abatement cost data (from the data provided) and estimate a linear regression model with zero intercept. These estimated linear regressions will be your estimates of the marginal abatement cost curve (one for each irrigation district), which you will use for the remainder of this analysis.
 
-#### **MC Across Counties**
+#### **Figure 1: MC Across Counties**
 ```{r}
 districts_sub <- districts %>% 
   rename(kern = mc_kern,
@@ -135,7 +136,7 @@ districts_predict_clean <- districts_predict %>%
 
 Using your estimated marginal abatement cost curves, derive each district’s demand curve for water. In other words, how much would each district be willing to pay for the right to use the first AF of water, second AF, etc.? Plot each district’s demand curve on a single graph. Which sector is willing to pay the most for the first AF of water?
 
-### **Figure X**
+#### **Figure X**
 
 ```{r}
 # Caluclate demand curves:
@@ -172,6 +173,11 @@ ventura_demand <- function(reduction){
 return(demand)
 }
 
+demand_water <- seq(0,300, by = 1)
+ventura_p <- ventura_demand(demand_water)
+kern_p <- kern_demand(demand_water)
+mojave_p <- mojave_demand(demand_water)
+antelope_p <- antelope_demand(demand_water)
 
 
 ggplot(data = districts_predict_clean, aes(x = reduction, y = mc)) +
@@ -198,6 +204,7 @@ ggplot(data = districts_predict_clean, aes(x = reduction, y = mc)) +
   labs(x = "Reduction (AF)", y = "Marginal Cost ($/AF)")
 
 ```
+
 #### *This graph shows both water demand (downward sloping lines) and marginal cost of abatement (upward sloping lines), color coded for each county.*  
 
 Based on the graph above, Antelope County is willing to pay the most for the first unit of water. 
@@ -206,78 +213,142 @@ Based on the graph above, Antelope County is willing to pay the most for the fir
 
 Here you will analyze three alternative policies for reducing water use among these irrigation districts. In total, these irrigation districts will need to reduce water consumption from the current 755 AF down to 500 AF. 
 
-### **Cap Without Trade**
+#### **Cap Without Trade**
 
 ```{r}
 # Cap without trade. Reduce each district’s water use by the same fraction (e.g., 1/3 of current baseline use), so the 500 AF target is met. (multiplier is 0.338)
 
 fraction <- 0.662
-kern_cap <- 150*fraction
-#50.7
-mojave_cap <- 140*fraction 
-#47.32
-antelope_cap <- 220*fraction
-#74.36
-ventura_cap <- 245*fraction
-#82.81
+kern_use_cap <- 150*fraction
+#50.7 reduced 
+mojave_use_cap <- 140*fraction 
+#47.32 reduced
+antelope_use_cap <- 220*fraction
+#74.36 reduced
+ventura_use_cap <- 245*fraction
+#82.81 reduced
 
-# DON'T KNOW ABOUT STRINGENCY HERE, Is stringency just 0.338? 
+#mojave_cap+ventura_cap+antelope_cap+kern_cap --> This all adds up to 500 AF, the total use 
 
-# Cost, plug in reduction to each district's cost curve, then take the area under the marginal cost curve for each at the given price/quantity reduction? 
+# But cost is a function of abatement, so we need the abatement values instead.
 
-kern_price <- kern_cap*(lm_kern$coefficients)
-kern_cost <- 0.5*kern_price*kern_cap
+kern_abate_cap <- 150-kern_use_cap
+mojave_abate_cap <- 140-mojave_use_cap
+antelope_abate_cap <- 220-antelope_use_cap
+ventura_abate_cap <- 245-ventura_use_cap
+# DON'T KNOW ABOUT STRINGENCY HERE
 
-mojave_price <- mojave_cap*(lm_mojave$coefficients)
-mojave_cost <- 0.5*mojave_price*mojave_cap
+# Cost, plug in REDUCTION to each district's cost curve, then take the area under the marginal cost curve for each at the given price/quantity reduction
 
-antelope_price <- antelope_cap*(lm_antelope$coefficients)
-antelope_cost <- 0.5*antelope_cap*antelope_price
+kern_price_cap <- 2.28*kern_abate_cap
+kern_cost_cap <- 0.5*kern_price_cap*kern_abate_cap
 
-ventura_price <- ventura_cap*(lm_ventura$coefficients)
-ventura_cost <- 0.5*ventura_cap*ventura_price
+mojave_price_cap <- 2.28*mojave_abate_cap
+mojave_cost_cap <- 0.5*mojave_price_cap*mojave_abate_cap
 
-total_cost = ventura_cost + kern_cost + antelope_cost + mojave_cost
+antelope_price_cap <- 2.28*antelope_abate_cap
+antelope_cost_cap <- 0.5*antelope_price_cap*antelope_abate_cap
+
+ventura_price_cap <- 2.28*ventura_abate_cap
+ventura_cost_cap <- 0.5*ventura_price_cap*ventura_abate_cap
+
+total_cost_cap = ventura_cost_cap + kern_cost_cap + antelope_cost_cap + mojave_cost_cap
 ```
 
 *(1)* Stringency of this policy is defined as the magnitude of the fraction for reduction. In this case, that is equal to `r fraction`. 
 
-*(2)* Total cost of this approach is $`r total_cost`.
+*(2)* Total cost of this approach is $`r total_cost_cap`.
 
 *(3)* Individual district costs are as follows:
-- Kern : $`r kern_cost`
-- Mojave: $`r mojave_cost`
-- Antelope: $`r antelope_cost`
-- Ventura: $`r ventura_cost`
+- Kern : $`r kern_cost_cap`
+- Mojave: $`r mojave_cost_cap`
+- Antelope: $`r antelope_cost_cap`
+- Ventura: $`r ventura_cost_cap`
 
 *(4)* This policy does not generate tax revenue.
 
-Antelope County bears the highest individual cost as a result of this cap without trade policy which applies an equal fractional reduction to the baseline water use in each district. 
+Ventura County bears the highest individual cost as a result of this cap without trade policy which applies an equal fractional reduction to the baseline water use in each district. 
 
-### **Tax on Water Use**
+#### **Tax on Water Use**
 
 ```{r}
-# Tax applied to reach 500 AF level
+# Tax applied to reach 500 AF level, 255 AF reduction 
 # Calculate aggregate demand to get the price at which cumulative water use is 500 AF
 
-# aggregate_demand = 1,940.8 - 10.73(REDUCTION) 
-# Demand at 755AF = 
+# Add together the inverse slopes of each MC curve 
+
+aggregate_cost_slope <- 1/(1/2.29 + 1/3.8 + 1/2.86 + 1/1.78)
+
+tax_level <- 0.621*255 
+
+# Tax of $158/AF is applied across all counties. 
+
+# Now we need to see cost to each district, plug the price into the individual MC curves then take the area under each and sum for total. 
+
+# Kern
+# tax_level = 2.29A
+kern_abate_tax <- tax_level/2.29
+# 69.15 AF
+kern_cost_tax <- 0.5*tax_level*kern_abate_tax
+
+# Mojave
+# tax_level = 3.8A
+mojave_abate_tax <- tax_level/3.8
+#41.67 AF
+mojave_cost_tax <- 0.5*tax_level*mojave_abate_tax
+
+#Antelope
+# tax_level = 2.86A
+antelope_abate_tax = tax_level/2.86
+# 55.37 AF
+antelope_cost_tax <- 0.5*tax_level*antelope_abate_tax
+
+# Ventura
+# tax_level = 1.78A 
+ventura_abate_tax = tax_level/1.78
+# 88.96
+ventura_cost_tax <- 0.5*tax_level*ventura_abate_tax
+
+#ventura_abate_tax+mojave_abate_tax+antelope_abate_tax+kern_abate_tax
+# Total abatement still 255 
+
+total_cost_tax = ventura_cost_tax+antelope_cost_tax+mojave_cost_tax+kern_cost_tax
+
+# Revenue is the tax times the AF used. 
+tax_revenue <- tax_level*500
+```
+
+*(1)* Stringency of this policy is defined as the magnitude of the tax for reduction. In this case, that is equal to $`r tax_level`. 
+
+*(2)* Total cost of this approach is $`r total_cost_tax`.
+
+*(3)* Individual district costs are as follows:
+- Kern : $`r kern_cost_tax`
+- Mojave: $`r mojave_cost_tax`
+- Antelope: $`r antelope_cost_tax`
+- Ventura: $`r ventura_cost_tax`
+
+*(4)* Tax revenue generted is $`r tax_revenue` based on 500AF of total use.
+
+#### **Cap and Trade**
+From part (a), we have the cost to each district for the cap without trade as: 
+
+- Kern : $`r kern_cost_cap`, reduction of 50.7 AF 
+- Mojave: $`r mojave_cost_cap`, reduction of 42.73 AF
+- Antelope: $`r antelope_cost_cap`, reduction of 74.36 AF
+- Ventura: $`r ventura_cost_cap`, reduction of 82.81 AF
+
+We also have the total cost from above as: $`r total_cost_cap`.
+
+
+```{r}
+# Given the total marginal cost, we should assume these will be set equal for firms to get the quantity
 
 
 ```
 
 
-*(1)* Stringency of this policy is defined as the magnitude of the fraction for reduction. In this case, that is equal to `r fraction`. 
 
-*(2)* Total cost of this approach is $`r total_cost`.
-
-*(3)* Individual district costs are as follows:
-- Kern : $`r kern_cost`
-- Mojave: $`r mojave_cost`
-- Antelope: $`r antelope_cost`
-- Ventura: $`r ventura_cost`
-
-*(4)*
 
 ### **4. Drought Sensitivity**
 
