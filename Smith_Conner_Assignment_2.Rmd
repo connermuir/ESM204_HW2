@@ -240,16 +240,16 @@ ventura_abate_cap <- 245-ventura_use_cap
 
 # Cost, plug in REDUCTION to each district's cost curve, then take the area under the marginal cost curve for each at the given price/quantity reduction
 
-kern_price_cap <- 2.28*kern_abate_cap
+kern_price_cap <- 2.29*kern_abate_cap
 kern_cost_cap <- 0.5*kern_price_cap*kern_abate_cap
 
-mojave_price_cap <- 2.28*mojave_abate_cap
+mojave_price_cap <- 3.8*mojave_abate_cap
 mojave_cost_cap <- 0.5*mojave_price_cap*mojave_abate_cap
 
-antelope_price_cap <- 2.28*antelope_abate_cap
+antelope_price_cap <- 2.86*antelope_abate_cap
 antelope_cost_cap <- 0.5*antelope_price_cap*antelope_abate_cap
 
-ventura_price_cap <- 2.28*ventura_abate_cap
+ventura_price_cap <- 1.78*ventura_abate_cap
 ventura_cost_cap <- 0.5*ventura_price_cap*ventura_abate_cap
 
 total_cost_cap = ventura_cost_cap + kern_cost_cap + antelope_cost_cap + mojave_cost_cap
@@ -267,7 +267,7 @@ total_cost_cap = ventura_cost_cap + kern_cost_cap + antelope_cost_cap + mojave_c
 
 *(4)* This policy does not generate tax revenue.
 
-Ventura County bears the highest individual cost as a result of this cap without trade policy which applies an equal fractional reduction to the baseline water use in each district. 
+Antelope County bears the highest individual cost as a result of this cap without trade policy which applies an equal fractional reduction to the baseline water use in each district. 
 
 #### **Tax on Water Use**
 
@@ -277,11 +277,12 @@ Ventura County bears the highest individual cost as a result of this cap without
 
 # Add together the inverse slopes of each MC curve 
 
-aggregate_cost_slope <- 1/(1/2.29 + 1/3.8 + 1/2.86 + 1/1.78)
+aggregate_cost_slope <- (1/2.29 + 1/3.8 + 1/2.86 + 1/1.78)
 
-tax_level <- 0.621*255 
 
-# Tax of $158/AF is applied across all counties. 
+tax_level <- 255/aggregate_cost_slope
+
+# Tax of $158.26/AF is applied across all counties. 
 
 # Now we need to see cost to each district, plug the price into the individual MC curves then take the area under each and sum for total. 
 
@@ -327,6 +328,9 @@ tax_revenue <- tax_level*500
 - Mojave: $`r mojave_cost_tax`
 - Antelope: $`r antelope_cost_tax`
 - Ventura: $`r ventura_cost_tax`
+ventura_cost_tax/162
+
+mojave_cost_tax/93
 
 *(4)* Tax revenue generated is $`r tax_revenue` based on 500AF of total use.
 
@@ -343,17 +347,56 @@ We also have the total cost from above as: $`r total_cost_cap`.
 ```{r}
 # Given the total marginal cost, we should assume these will be set equal for firms to get the most efficient/lowest cost solution. 
 
+# THIS SHOULD BE THE SAME AS THE TAX IN TERMS OF ABATEMENT PER DISTRICT 
+
 #Kern initially abates 50.7 AF at a price/MC of $115.6, they use 99.3 AF
 #Mojave initially abates 42.73 AF at price/MC of $107.89, they use 92.7 AF
 #Antelope initially abates 74.36 AF at price/MC of $169.54, they use 145.6 AF
 #Ventura initially abates 82.8 AF at price/MC of $188.8, they use 162.2 AF
 
-#Use could probably be considered their "allocations"/"rights"
+# Use post-quota could probably be considered their "allocations"/"rights"
 
-# Still need to abate 255 AF total, but Mojave and Kern will likely abate more/use less at higher relative MC while Antelope and Ventura will abate less/use more at slightly lower MC. 
+# Still need to abate 255 AF total, but Mojave and Kern will likely face higher relative MC while Antelope and Ventura will face slightly lower MC. 
 
-# Use demand curves? 
+trade_mc <- 158.355
 
+#Kern Q with trade
+kern_abate_trade <- trade_mc/2.29
+#69.15 AF is abatement level (far higher than initial)
+
+#Mojave Q with trade
+mojave_abate_trade <- trade_mc/3.8
+#41.67 AF is new abatement level (almost same as initial)
+
+#Antelope Q with trade
+antelope_abate_trade <- trade_mc/2.86
+#55.37 AF is new abatement level (far below initial)
+
+#Ventura Q with trade
+ventura_abate_trade <- trade_mc/1.78
+#88.96 AF is new abatement level (higher than initial)
+
+#ventura_abate_trade+antelope_abate_trade+mojave_abate_trade+kern_abate_trade
+
+# Same allocation/cost as efficient tax, different revenue implications. MC for abatement is the same for each district at these allocations. 
+
+ventura_cost_cap/ventura_abate_cap
+ventura_cost_tax/ventura_abate_trade
+# MC lower compared to cap
+
+antelope_cost_cap/antelope_abate_cap
+antelope_cost_tax/antelope_abate_trade
+# MC Lower compared to cap
+
+kern_cost_cap/kern_abate_cap
+kern_cost_tax/kern_abate_trade
+# MC higher compared to cap
+
+mojave_cost_cap/mojave_abate_cap
+mojave_cost_tax/mojave_abate_trade
+# MC higher compared to cap
+
+0.5*trade_mc*255
 ```
 
 *(1)* Stringency of this policy is defined as the magnitude of the tax for reduction. In this case, that is equal to $`r fraction`. 
