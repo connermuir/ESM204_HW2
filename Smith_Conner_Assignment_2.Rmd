@@ -343,16 +343,17 @@ We also have the total cost from above as: $`r total_cost_cap`.
 ```{r}
 # Given the total marginal cost, we should assume these will be set equal for firms to get the most efficient/lowest cost solution. 
 
-#Kern initially abates 50.7 AF at a price/MC of $115.6
-#Mojave initially abates 42.73 AF at price/MC of $107.89
-#Antelope initially abates 74.36 AF at price/MC of $169.54
-#Ventura initially abates 82.8 AF at price/MC of $188.8
+#Kern initially abates 50.7 AF at a price/MC of $115.6, they use 99.3 AF
+#Mojave initially abates 42.73 AF at price/MC of $107.89, they use 92.7 AF
+#Antelope initially abates 74.36 AF at price/MC of $169.54, they use 145.6 AF
+#Ventura initially abates 82.8 AF at price/MC of $188.8, they use 162.2 AF
 
-# Still need to abate 255 AF total, but Mojave and Kern will likely abate more at higher relative MC while Antelope and Ventura will abate less at slightly lower MC. 
+#Use could probably be considered their "allocations"/"rights"
+
+# Still need to abate 255 AF total, but Mojave and Kern will likely abate more/use less at higher relative MC while Antelope and Ventura will abate less/use more at slightly lower MC. 
 
 # Use demand curves? 
 
-#aggregate demand = 1,940.8 - 0.621A
 ```
 
 *(1)* Stringency of this policy is defined as the magnitude of the tax for reduction. In this case, that is equal to $`r fraction`. 
