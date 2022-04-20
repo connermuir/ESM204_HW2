@@ -328,7 +328,7 @@ tax_revenue <- tax_level*500
 - Antelope: $`r antelope_cost_tax`
 - Ventura: $`r ventura_cost_tax`
 
-*(4)* Tax revenue generted is $`r tax_revenue` based on 500AF of total use.
+*(4)* Tax revenue generated is $`r tax_revenue` based on 500AF of total use.
 
 #### **Cap and Trade**
 From part (a), we have the cost to each district for the cap without trade as: 
@@ -340,14 +340,32 @@ From part (a), we have the cost to each district for the cap without trade as:
 
 We also have the total cost from above as: $`r total_cost_cap`.
 
-
 ```{r}
-# Given the total marginal cost, we should assume these will be set equal for firms to get the quantity
+# Given the total marginal cost, we should assume these will be set equal for firms to get the most efficient/lowest cost solution. 
 
+#Kern initially abates 50.7 AF at a price/MC of $115.6
+#Mojave initially abates 42.73 AF at price/MC of $107.89
+#Antelope initially abates 74.36 AF at price/MC of $169.54
+#Ventura initially abates 82.8 AF at price/MC of $188.8
 
+# Still need to abate 255 AF total, but Mojave and Kern will likely abate more at higher relative MC while Antelope and Ventura will abate less at slightly lower MC. 
+
+# Use demand curves? 
+
+#aggregate demand = 1,940.8 - 0.621A
 ```
 
+*(1)* Stringency of this policy is defined as the magnitude of the tax for reduction. In this case, that is equal to $`r fraction`. 
 
+*(2)* Total cost of this approach is $.
+
+*(3)* Individual district costs are as follows:
+- Kern : $`r `
+- Mojave: $`r `
+- Antelope: $`r `
+- Ventura: $`r `
+
+*(4)* Tax revenue generated is $`r tax_revenue` based on 500AF of total use.
 
 
 ### **4. Drought Sensitivity**
