@@ -412,7 +412,7 @@ This is $`r round(total_cost_cap - total_cost_trade, 0)` lower than the cost of 
 - Antelope: $`r round(antelope_cost_tax - trade_mc*-18.98,0)`
 - Ventura: $`r round(ventura_cost_tax - trade_mc*6.17,0)` 
 
-*(4)* No tax revenue is generated from this policy. Instead, some districts may pay others to increase abatement more so they can use more water. We did not calculate this, although it can be assumed that the per unit price of AF for the trade value is the same as the tax amount, which is $`r round(tax_level,0)` per AF. It is presumed that districts with lower costs under the cap and trade scenario (Mojave and Antelope) would compensate districts with higher costs (Kern and Ventura) to incentivize them to abate more.
+*(4)* No tax revenue is generated from this policy. Instead, some districts may pay others to increase abatement more so they can use more water. It can be assumed that the per unit price of AF for the trade value is the same as the tax amount, which is $`r round(tax_level,0)` per AF. It is presumed that districts with lower costs under the cap and trade scenario (Mojave and Antelope) would compensate districts with higher costs (Kern and Ventura) to incentivize them to abate more.
 
 
 ### **4. Drought Sensitivity**
@@ -578,8 +578,17 @@ This is $`r round(total_cost_cap_d - total_cost_trade_d, 0)` lower than the cost
 *(2)* Individual district costs are as follows (same as the tax - abatement change * credit price):
 
 - Kern : $`r round(kern_cost_tax_d - trade_mc_d*32.86,0)`
-- Mojave: $`r round(mojave_cost_tax_d - trade_mc_d*-10.11,0)`
-- Antelope: $`r round(antelope_cost_tax_d - trade_mc_d*-33.92,0)`
-- Ventura: $`r round(ventura_cost_tax_d - trade_mc_d*10.91,0)` 
+**Based on cost alone, Kern will prefer cap and trade.**  
 
-*(3)* No tax revenue is generated from this policy. Instead, some districts may pay others to increase abatement more so they can use more water. We did not calculate this, although it can be assumed that the per unit price of AF for the trade value is the same as the tax amount, which is $`r round(tax_level_d,0)` per AF. It is presumed that districts with lower costs under the cap and trade scenario (Mojave and Antelope) would compensate districts with higher costs (Kern and Ventura) to incentivize them to abate more and offset some of their costs. 
+- Mojave: $`r round(mojave_cost_tax_d - trade_mc_d*-10.11,0)`
+**Based on cost alone, Mojave will prefer the tax.**
+
+- Antelope: $`r round(antelope_cost_tax_d - trade_mc_d*-33.92,0)`
+**Based on cos alone, Antelope will prefer the tax**
+
+- Ventura: $`r round(ventura_cost_tax_d - trade_mc_d*10.91,0)` 
+**Based on cost alone, Ventura will prefer cap and trade**
+
+**No district will chose cap with no trade**
+
+*(3)* No tax revenue is generated from this policy. Instead, some districts may pay others to increase abatement more so they can use more water. The per unit price of AF for the trade value is the same as the tax amount, which is $`r round(tax_level_d,0)` per AF. It is presumed that districts with lower costs under the cap and trade scenario (Mojave and Antelope) would compensate districts with higher costs (Kern and Ventura) to incentivize them to abate more and offset some of their costs. 
