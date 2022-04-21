@@ -9,10 +9,11 @@ output:
      fg: "#EEE8D5"
      primary: "#2AA198"
    code_folding: hide
+   
 ---
 
-```{r setup, include=FALSE, message=FALSE, warning=FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, options(scipen = 999))
+```{r setup, include=TRUE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, options(scipen = 999))
 
 library(tidyverse)
 library(here)
