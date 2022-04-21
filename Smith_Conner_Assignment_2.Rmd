@@ -76,7 +76,11 @@ ggplot(data = districts_sub, aes(x = reduction, y = mc)) +
                      values = c('cadetblue3', 'darkgoldenrod1',
                      'darkolivegreen4', 'sienna2')) +
   labs(x = "Reduction (AF)", y = "Marginal Cost ($/AF)")
+```
 
+###### *This graph shows marginal cost of water abatement for each district based on the original data. Lines of best fit were applies to estimate the marginal cost curves for all districts.* 
+
+```{r}
 # Linear model for Kern MC forcing 0 intercept 
 
 lm_kern <- lm(mc_kern ~ 0 + reduction, data = districts)
@@ -96,7 +100,6 @@ extract_eq(model = lm_antelope, use_coefs = TRUE)
 
 lm_ventura <- lm(mc_ventura ~ 0 + reduction, data = districts)
 extract_eq(model = lm_ventura, use_coefs = TRUE)
-
 ```
 
 
@@ -314,7 +317,7 @@ total_cost_tax = 0.5*255*tax_level
 tax_revenue <- tax_level*500
 ```
 
-*(1)* Stringency of this policy is defined as the magnitude of the tax for reduction. In this case, that is equal to $`r tax_level`. 
+*(1)* Stringency of this policy is defined as the magnitude of the tax for reduction. In this case, that is equal to $`r round(tax_level,0)`. 
 
 *(2)* Total cost of this approach is $`r round(total_cost_tax,0)`.
 
@@ -335,7 +338,7 @@ From part (a), we have the cost to each district for the cap without trade as:
 - Antelope: $`r round(antelope_cost_cap,0)`, reduction of 74.36 AF
 - Ventura: $`r round(ventura_cost_cap,0)`, reduction of 82.81 AF
 
-We also have the total cost from above as: $`r total_cost_cap`.
+We also have the total cost from above as: $`r round(total_cost_cap,0)`.
 
 ```{r}
 # Given the total marginal cost, we should assume these will be set equal for firms to get the most efficient/lowest cost solution. 
@@ -373,41 +376,210 @@ ventura_abate_trade <- trade_mc/1.78
 
 # Same allocation/cost as efficient tax, different revenue implications. MC for abatement is the same for each district at these allocations. 
 
-ventura_cost_cap/ventura_abate_cap
-ventura_cost_tax/ventura_abate_trade
+#ventura_cost_cap/ventura_abate_cap
+#ventura_cost_tax/ventura_abate_trade
 # MC lower compared to cap
 
-antelope_cost_cap/antelope_abate_cap
-antelope_cost_tax/antelope_abate_trade
+#antelope_cost_cap/antelope_abate_cap
+#antelope_cost_tax/antelope_abate_trade
 # MC Lower compared to cap
 
-kern_cost_cap/kern_abate_cap
-kern_cost_tax/kern_abate_trade
+#kern_cost_cap/kern_abate_cap
+#kern_cost_tax/kern_abate_trade
 # MC higher compared to cap
 
-mojave_cost_cap/mojave_abate_cap
-mojave_cost_tax/mojave_abate_trade
+#mojave_cost_cap/mojave_abate_cap
+#mojave_cost_tax/mojave_abate_trade
 # MC higher compared to cap
 
 total_cost_trade<- 0.5*trade_mc*255
 ```
 
-*(1)* Stringency of this policy is defined as the magnitude of the tax for reduction. In this case, that is equal to $`r fraction`. 
+*(1)* Stringency of this policy is defined as the magnitude of the fraction or factor of reduction. This is different for each district: 
+
+- Kern: **0.44**
+- Mojave: **0.26**
+- Antelope: **0.35**
+- Ventura: **0.56**
 
 *(2)* Total cost of this approach is $`r round(total_cost_trade,0)` (same as tax).
 This is $`r round(total_cost_cap - total_cost_trade, 0)` lower than the cost of the cap with no trade.
 
-*(3)* Individual district costs are as follows (same as the tax):
+*(3)* Individual district costs are as follows (the baseline is the same as the tax but we are assuming the ones that have to abate more are paid by the ones that abate less - baseline is subtracted by the change in abatement multiplied by the credit price):
 
-- Kern : $`r round(kern_cost_tax,0)`
-- Mojave: $`r round(mojave_cost_tax,0)`
-- Antelope: $`r round(antelope_cost_tax,0)`
-- Ventura: $`r round(ventura_cost_tax,0)` 
+- Kern : $`r round(kern_cost_tax - trade_mc*18.47,0)`
+- Mojave: $`r round(mojave_cost_tax - trade_mc*-5.64,0)`
+- Antelope: $`r round(antelope_cost_tax - trade_mc*-18.98,0)`
+- Ventura: $`r round(ventura_cost_tax - trade_mc*6.17,0)` 
 
 *(4)* No tax revenue is generated from this policy. Instead, some districts may pay others to increase abatement more so they can use more water. We did not calculate this, although it can be assumed that the per unit price of AF for the trade value is the same as the tax amount, which is $`r round(tax_level,0)` per AF. It is presumed that districts with lower costs under the cap and trade scenario (Mojave and Antelope) would compensate districts with higher costs (Kern and Ventura) to incentivize them to abate more.
 
 
 ### **4. Drought Sensitivity**
 
-A severe drought hits California, and it is necessary to reduce water use from 500 AF down to 300 AF. Your job is to estimate the cost of the drought (i.e., the cost of reducing water use from 500 AF to 300 AF) to each irrigation district under each policy. Considering the entire jump from status quo (755 AF) to the drought (300 AF), which policy is preferred by each irrigation district? How does your answer depend on 
-how rights are allocated to each district (in policies (a) and (c))
+A severe drought hits California, and it is necessary to reduce water use from 500 AF down to 300 AF. We now estimate the cost of the drought (i.e., the cost of reducing water use from 500 AF to 300 AF) to each irrigation district under each policy. Considering the entire jump from status quo (755 AF) to the drought (300 AF), we determine which policy is preferred by each irrigation district. 
+
+#### **Drought + Cap Without Trade**
+
+```{r}
+# Cap without trade. Reduce each district’s water use by the same fraction, so the 300 AF target is met. (multiplier is 0.397)
+
+fraction_drought <- 0.397
+kern_use_d <- 150*fraction_drought
+
+mojave_use_d <- 140*fraction_drought
+
+antelope_use_d <- 220*fraction_drought
+
+ventura_use_d <- 245*fraction_drought
+
+
+# But cost is a function of abatement, so we need the abatement values instead.
+
+kern_abate_cap_d <- 150-kern_use_d
+mojave_abate_cap_d <- 140-mojave_use_d
+antelope_abate_cap_d <- 220-antelope_use_d
+ventura_abate_cap_d <- 245-ventura_use_d
+# DON'T KNOW ABOUT STRINGENCY HERE
+
+# Cost, plug in REDUCTION to each district's cost curve, then take the area under the marginal cost curve for each at the given price/quantity reduction
+
+kern_price_cap_d <- 2.29*kern_abate_cap_d
+kern_cost_cap_d <- 0.5*kern_price_cap_d*kern_abate_cap_d
+
+mojave_price_cap_d <- 3.8*mojave_abate_cap_d
+mojave_cost_cap_d <- 0.5*mojave_price_cap_d*mojave_abate_cap_d
+
+antelope_price_cap_d <- 2.86*antelope_abate_cap_d
+antelope_cost_cap_d <- 0.5*antelope_price_cap_d*antelope_abate_cap_d
+
+ventura_price_cap_d <- 1.78*ventura_abate_cap_d
+ventura_cost_cap_d <- 0.5*ventura_price_cap_d*ventura_abate_cap_d
+
+total_cost_cap_d = ventura_cost_cap_d + kern_cost_cap_d + antelope_cost_cap_d + mojave_cost_cap_d
+```
+
+
+*(1)* Total cost of this approach is $`r round(total_cost_cap_d,0)`.
+
+*(2)* Individual district costs are as follows:
+
+- Kern : $`r round(kern_cost_cap_d,0)`
+- Mojave: $`r round(mojave_cost_cap_d,0)`
+- Antelope: $`r round(antelope_cost_cap_d,0)`
+- Ventura: $`r round(ventura_cost_cap_d,0)`
+
+Antelope County bears the highest individual cost as a result of this drought and cap without trade policy which applies an equal fractional reduction to the baseline water use in each district. 
+
+#### **Drought + Tax on Water Use**
+
+```{r}
+# Tax applied to reach 300 AF level, 455 AF reduction 
+# Calculate aggregate demand to get the price at which cumulative water use is \300 AF
+
+# Same aggregate cost slope as above
+
+tax_level_d <- 455/aggregate_cost_slope
+
+# Tax of $282.38/AF is applied across all counties. 
+
+# Now we need to see cost to each district, plug the price into the individual MC curves then take the area under each and sum for total. 
+
+# Kern
+# tax_level = 2.29A
+kern_abate_tax_d <- tax_level_d/2.29
+# 123.3 AF
+kern_cost_tax_d <- 0.5*tax_level_d*kern_abate_tax_d
+
+# Mojave
+# tax_level = 3.8A
+mojave_abate_tax_d <- tax_level_d/3.8
+#74.31 AF
+mojave_cost_tax_d <- 0.5*tax_level_d*mojave_abate_tax_d
+
+#Antelope
+# tax_level = 2.86A
+antelope_abate_tax_d = tax_level_d/2.86
+# 98.74 AF
+antelope_cost_tax_d <- 0.5*tax_level_d*antelope_abate_tax_d
+
+# Ventura
+# tax_level = 1.78A 
+ventura_abate_tax_d = tax_level_d/1.78
+# 158.64 AF
+ventura_cost_tax_d <- 0.5*tax_level_d*ventura_abate_tax_d
+
+#ventura_abate_tax_d+mojave_abate_tax_d+antelope_abate_tax_d+kern_abate_tax_d
+# Total abatement 455 
+
+total_cost_tax_d = 0.5*455*tax_level_d 
+
+# Revenue is the tax times the AF used. 
+tax_revenue_d <- tax_level_d*300
+```
+
+*(1)* Total cost of this approach is $`r round(total_cost_tax_d,0)`.
+
+*(2)* Individual district costs are as follows:
+
+- Kern : $`r round(kern_cost_tax_d,0)`
+- Mojave: $`r round(mojave_cost_tax_d,0)`
+- Antelope: $`r round(antelope_cost_tax_d,0)`
+- Ventura: $`r round(ventura_cost_tax_d,0)` 
+
+*(3)* Tax revenue generated is $`r round(tax_revenue_d,0)` based on 300AF of total use. This is slightly higher than the tax revenue for the non-drought scenario. 
+
+This policy would likely not be favored by Kern since it would essentially wipe out their water consumption. 
+
+#### **Drought + Cap and Trade**
+From part (a), we have the cost to each district for the cap without trade as: 
+
+- Kern : $`r round(kern_cost_cap_d,0)`, reduction of 90.45 AF. This leaves Kern's total post-drought use as `r kern_use_d` AF. 
+- Mojave: $`r round(mojave_cost_cap_d,0)`, reduction of 84.42 AF. This leaves Mojave's total post-drought use as `r mojave_use_d` AF. 
+- Antelope: $`r round(antelope_cost_cap_d,0)`, reduction of 132.66 AF. This leaves Antelope's total post-drought use as `r antelope_use_d` AF. 
+- Ventura: $`r round(ventura_cost_cap_d,0)`, reduction of 147.74 AF. This leaves Ventura's total post-drought use as `r ventura_use_d` AF. 
+
+We also have the total cost from above as: $`r round(total_cost_cap_d,0)`.
+
+```{r}
+
+# Still need to abate 455 AF total, but Mojave and Kern will likely face higher relative MC while Antelope and Ventura will face slightly lower MC. 
+
+trade_mc_d <- tax_level_d
+
+#Kern Q with trade
+kern_abate_trade_d <- trade_mc_d/2.29
+#kern_abate_cap_d - kern_abate_trade_d
+#32.86 increase in abatement
+
+#Mojave Q with trade
+mojave_abate_trade_d <- trade_mc_d/3.8
+#mojave_abate_cap_d-mojave_abate_trade_d
+#-10.11 decrease in abatement 
+
+#Antelope Q with trade
+antelope_abate_trade_d <- trade_mc_d/2.86
+#antelope_abate_cap_d-antelope_abate_trade_d
+#-33.92 decrease in abatement 
+
+#Ventura Q with trade
+ventura_abate_trade_d <- trade_mc_d/1.78
+ventura_abate_cap_d-ventura_abate_trade_d
+#10.91 increase in abatement
+
+# Same allocation/cost as efficient tax, different revenue implications. MC for abatement is the same for each district at these allocations. 
+
+total_cost_trade_d<- 0.5*trade_mc_d*455
+```
+
+*(1)* Total cost of this approach is $`r round(total_cost_trade_d,0)` (same as tax).
+This is $`r round(total_cost_cap_d - total_cost_trade_d, 0)` lower than the cost of the cap with no trade.
+
+*(2)* Individual district costs are as follows (same as the tax - abatement change * credit price):
+
+- Kern : $`r round(kern_cost_tax_d - trade_mc_d*32.86,0)`
+- Mojave: $`r round(mojave_cost_tax_d - trade_mc_d*-10.11,0)`
+- Antelope: $`r round(antelope_cost_tax_d - trade_mc_d*-33.92,0)`
+- Ventura: $`r round(ventura_cost_tax_d - trade_mc_d*10.91,0)` 
+
+*(3)* No tax revenue is generated from this policy. Instead, some districts may pay others to increase abatement more so they can use more water. We did not calculate this, although it can be assumed that the per unit price of AF for the trade value is the same as the tax amount, which is $`r round(tax_level_d,0)` per AF. It is presumed that districts with lower costs under the cap and trade scenario (Mojave and Antelope) would compensate districts with higher costs (Kern and Ventura) to incentivize them to abate more and offset some of their costs. 
