@@ -253,7 +253,7 @@ ventura_cost_cap <- 0.5*ventura_price_cap*ventura_abate_cap
 total_cost_cap = ventura_cost_cap + kern_cost_cap + antelope_cost_cap + mojave_cost_cap
 ```
 
-*(1)* Stringency of this policy is defined as the magnitude of the fraction for reduction. In this case, that is equal to `r fraction`. 
+*(1)* Stringency of this policy is defined as the magnitude of the fraction for reduction. In this case, each district has to reduce water use by `r (1-fraction)*100`%. 
 
 *(2)* Total cost of this approach is $`r round(total_cost_cap,0)`.
 
