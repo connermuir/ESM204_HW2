@@ -1,6 +1,6 @@
 ---
 title: "ESM 204 - Assignment 2"
-author: "Conner Smith"
+author: "Conner Smith, Tommy King, Charlie Wilson"
 date: "4/13/2022"
 output:
   html_document:
@@ -396,7 +396,7 @@ ventura_abate_trade <- trade_mc/1.78
 total_cost_trade<- 0.5*trade_mc*255
 ```
 
-*(1)* Stringency of this policy is defined as the magnitude of the fraction or factor of reduction. This is different for each district: 
+*(1)* Stringency of this policy is defined as the magnitude of the fraction or factor of reduction. This is different for each district after the: 
 
 - Kern: **0.44**
 - Mojave: **0.26**
@@ -565,7 +565,7 @@ antelope_abate_trade_d <- trade_mc_d/2.86
 
 #Ventura Q with trade
 ventura_abate_trade_d <- trade_mc_d/1.78
-ventura_abate_cap_d-ventura_abate_trade_d
+#ventura_abate_cap_d-ventura_abate_trade_d
 #10.91 increase in abatement
 
 # Same allocation/cost as efficient tax, different revenue implications. MC for abatement is the same for each district at these allocations. 
@@ -585,7 +585,7 @@ This is $`r round(total_cost_cap_d - total_cost_trade_d, 0)` lower than the cost
 **Based on cost alone, Mojave will prefer the tax.**
 
 - Antelope: $`r round(antelope_cost_tax_d - trade_mc_d*-33.92,0)`
-**Based on cos alone, Antelope will prefer the tax**
+**Based on cost alone, Antelope will prefer the tax**
 
 - Ventura: $`r round(ventura_cost_tax_d - trade_mc_d*10.91,0)` 
 **Based on cost alone, Ventura will prefer cap and trade**
